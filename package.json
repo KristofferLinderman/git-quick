@@ -1,11 +1,11 @@
 {
-  "name": "chrome-extension-template-preact-vite",
+  "name": "git-quick",
   "version": "0.0.1",
-  "description": "Chrome extension template with Preact, Tailwind CSS, Vite and Typescript preconfigured.",
+  "description": "Chrome extension to add useful buttons to GH commit UI",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fell-lucas/chrome-extension-template-preact-vite.git"
+    "url": "https://github.com/fell-lucas/git-quick.git"
   },
   "scripts": {
     "build": "vite build",
