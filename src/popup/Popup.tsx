@@ -1,23 +1,16 @@
-import { Logo } from '@assets/img/logo';
+import { Toggle } from '@src/components/toggle';
 
 const Popup = () => {
   return (
-    <div class='w-full bg-[#673ab8] p-8 text-center text-lg'>
-      <Logo />
-      <p class='text-white'>Hello Vite + Preact!</p>
-      <p class='text-white'>
-        <a
-          class='border-b-2'
-          href='https://preactjs.com/'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn Preact
-        </a>
-      </p>
-      <p data-testid='popup_text' class='p-6 text-3xl text-purple-400'>
-        Pop up page
-      </p>
+    <div class='w-80 whitespace-nowrap bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-cyan-700 via-purple-800 to-pink-600 p-8 text-center text-lg text-white'>
+      <h1 class='text-2xl font-bold'>Git Quick</h1>
+
+      <div className='grid gap-4 text-left'>
+        <p className='whitespace-normal'>Enable buttons</p>
+
+        <Toggle labelText='Cherry Pick' />
+        <Toggle labelText='Revert' />
+      </div>
     </div>
   );
 };

@@ -3,5 +3,6 @@
   "jsxSingleQuote": true,
   "trailingComma": "es5",
   "arrowParens": "avoid",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "endOfLine": "auto"
 }
