@@ -2,6 +2,8 @@ const commitItems = document.querySelectorAll('.TimelineItem-body > ol > li');
 
 type BtnIcons = '🍒' | '🔄';
 
+const WRAPPER_ID = 'git-quick-wrapper';
+
 const copySHA = (
   cherryBtn: HTMLButtonElement,
   commitSHA: string,
@@ -25,6 +27,7 @@ const copySHA = (
 
 const createBtn = (commitSHA: string, icon: BtnIcons, title: string) => {
   const cherryBtn = document.createElement('button');
+  cherryBtn.id = `${title}-${commitSHA}`;
 
   cherryBtn.style.padding = '0';
   cherryBtn.style.border = '1px solid rgba(31, 35, 40, 0.15)';
@@ -40,8 +43,10 @@ const createBtn = (commitSHA: string, icon: BtnIcons, title: string) => {
   return cherryBtn;
 };
 
-const CreateWrapper = () => {
+const CreateWrapper = (wrapperId: string) => {
   const wrapper = document.createElement('div');
+
+  wrapper.id = wrapperId;
   wrapper.style.display = 'flex';
   wrapper.style.marginLeft = '2rem';
   wrapper.style.gap = '.5rem';
@@ -49,20 +54,66 @@ const CreateWrapper = () => {
   return wrapper;
 };
 
-commitItems.forEach(commitItem => {
-  const liElem = commitItem as HTMLLIElement;
-  const commitSHA = liElem.dataset.url?.split('commits/')[1].split('/')[0];
-  if (!commitSHA) {
-    return;
+let shouldShowCherry: boolean = false;
+let shouldShowRevert: boolean = false;
+
+chrome.storage.sync.get('cherry', data => {
+  shouldShowCherry = !!data;
+});
+chrome.storage.sync.get('revert', data => {
+  shouldShowRevert = !!data;
+});
+
+const handleStorageChange = (event: {
+  [key: string]: chrome.storage.StorageChange;
+}) => {
+  if (Object.keys(event).includes('cherry')) {
+    shouldShowCherry = event.cherry.newValue;
+  } else if (Object.keys(event).includes('revert')) {
+    shouldShowRevert = event.revert.newValue;
   }
 
-  const wrapper = CreateWrapper();
-  const cherryBtn = createBtn(commitSHA, '🍒', 'Cherry Pick');
-  const revertBtn = createBtn(commitSHA, '🔄', 'Revert');
+  // TODO don't just append more and more button… 🙈
+  showButtons();
+};
+chrome.storage.onChanged.addListener(handleStorageChange);
 
-  wrapper.append(cherryBtn);
-  wrapper.append(revertBtn);
+const showButtons = () => {
+  commitItems.forEach(commitItem => {
+    const liElem = commitItem as HTMLLIElement;
+    const commitSHA = liElem.dataset.url?.split('commits/')[1].split('/')[0];
 
-  liElem.style.alignItems = 'center';
-  liElem.append(wrapper);
-});
+    if (!commitSHA || (!shouldShowCherry && !shouldShowRevert)) {
+      return;
+    }
+
+    const searchWrap = document.getElementById(
+      `${WRAPPER_ID}-${commitSHA.substring(0, 5)}`
+    );
+    const wrapper = searchWrap
+      ? searchWrap
+      : CreateWrapper(`${WRAPPER_ID}-${commitSHA.substring(0, 5)}`);
+    console.log('🐼 ~ file: index.ts:91 ~ showButtons ~ wrapper:', wrapper);
+
+    if (
+      shouldShowCherry &&
+      document.getElementById(`Cherry-Pick-${commitSHA}`) === null
+    ) {
+      const cherryBtn = createBtn(commitSHA, '🍒', 'Cherry-Pick');
+      wrapper.append(cherryBtn);
+    }
+
+    if (
+      shouldShowRevert &&
+      document.getElementById(`Revert-${commitSHA}`) === null
+    ) {
+      const revertBtn = createBtn(commitSHA, '🔄', 'Revert');
+      wrapper.append(revertBtn);
+    }
+
+    liElem.style.alignItems = 'center';
+    liElem.append(wrapper);
+  });
+};
+
+showButtons();

@@ -5,6 +5,7 @@ const manifest: ManifestType = {
   manifest_version: 3,
   name: packageJson.name,
   version: packageJson.version,
+  permissions: ['storage'],
   description: packageJson.description,
   options_page: 'src/options/index.html',
   background: { service_worker: 'src/background/index.js' },
