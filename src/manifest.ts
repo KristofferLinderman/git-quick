@@ -18,7 +18,7 @@ const manifest: ManifestType = {
   },
   content_scripts: [
     {
-      matches: ['http://*/*', 'https://*/*', '<all_urls>'],
+      matches: ['https://*.github.com/*'],
       js: ['src/content/index.js'],
     },
   ],
