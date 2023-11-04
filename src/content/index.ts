@@ -44,12 +44,25 @@ const createBtn = (commitSHA: string, icon: BtnIcons, title: string) => {
 };
 
 const CreateWrapper = (wrapperId: string) => {
+  const existingWrapper = document.getElementById(wrapperId);
+  console.log(
+    '🐼 ~ file: index.ts:48 ~ CreateWrapper ~ existingWrapper:',
+    existingWrapper
+  );
+  if (existingWrapper) {
+    existingWrapper.innerHTML = '';
+    return existingWrapper;
+  }
   const wrapper = document.createElement('div');
 
-  wrapper.id = wrapperId;
   wrapper.style.display = 'flex';
   wrapper.style.marginLeft = '2rem';
   wrapper.style.gap = '.5rem';
+  wrapper.style.opacity = '0';
+  wrapper.style.transform = 'translateY(10px)';
+  wrapper.style.transition = 'all 1s ease-in-out';
+
+  wrapper.id = wrapperId;
 
   return wrapper;
 };
@@ -69,16 +82,27 @@ const handleStorageChange = (event: {
 }) => {
   if (Object.keys(event).includes('cherry')) {
     shouldShowCherry = event.cherry.newValue;
+    console.log('🐼 ~ file: index.ts:76 ~ shouldShowCherry:', shouldShowCherry);
+    renderButtons();
   } else if (Object.keys(event).includes('revert')) {
     shouldShowRevert = event.revert.newValue;
+    console.log('🐼 ~ file: index.ts:80 ~ shouldShowRevert:', shouldShowRevert);
+    renderButtons();
   }
-
-  // TODO don't just append more and more button… 🙈
-  showButtons();
 };
 chrome.storage.onChanged.addListener(handleStorageChange);
 
-const showButtons = () => {
+const main = () => {
+  isRunning = true;
+  if (document.getElementById('git-quick-wrapper')) {
+    return;
+  }
+  renderButtons();
+};
+
+const renderButtons = () => {
+  const commitItems = document.querySelectorAll('.TimelineItem-body > ol > li');
+
   commitItems.forEach(commitItem => {
     const liElem = commitItem as HTMLLIElement;
     const commitSHA = liElem.dataset.url?.split('commits/')[1].split('/')[0];
@@ -87,17 +111,11 @@ const showButtons = () => {
       return;
     }
 
-    const searchWrap = document.getElementById(
-      `${WRAPPER_ID}-${commitSHA.substring(0, 5)}`
-    );
-    const wrapper = searchWrap
-      ? searchWrap
-      : CreateWrapper(`${WRAPPER_ID}-${commitSHA.substring(0, 5)}`);
-    console.log('🐼 ~ file: index.ts:91 ~ showButtons ~ wrapper:', wrapper);
+    const wrapper = CreateWrapper(`${WRAPPER_ID}-${commitSHA.substring(0, 5)}`);
 
     if (
       shouldShowCherry &&
-      document.getElementById(`Cherry-Pick-${commitSHA}`) === null
+      document.getElementById(`cherry-Pick-${commitSHA}`) === null
     ) {
       const cherryBtn = createBtn(commitSHA, '🍒', 'Cherry-Pick');
       wrapper.append(cherryBtn);
@@ -105,7 +123,7 @@ const showButtons = () => {
 
     if (
       shouldShowRevert &&
-      document.getElementById(`Revert-${commitSHA}`) === null
+      document.getElementById(`revert-${commitSHA}`) === null
     ) {
       const revertBtn = createBtn(commitSHA, '🔄', 'Revert');
       wrapper.append(revertBtn);
@@ -113,7 +131,26 @@ const showButtons = () => {
 
     liElem.style.alignItems = 'center';
     liElem.append(wrapper);
+
+    setTimeout(() => {
+      wrapper.style.opacity = '1';
+      wrapper.style.transform = 'translateY(0)';
+    }, 0);
   });
 };
 
-showButtons();
+let previousUrl: string = '';
+let isRunning = false;
+let hasWrapper = false;
+
+setInterval(() => {
+  const currentURL = window.location.href;
+  if (currentURL === previousUrl) {
+    return;
+  }
+  previousUrl = currentURL;
+
+  if (currentURL.includes('/commits/')) {
+    main();
+  }
+}, 200);
