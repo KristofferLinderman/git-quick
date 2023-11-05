@@ -30,6 +30,9 @@ The extension only runs on Github.com and requires no permissions. No data is co
    4. Find - Load unpacked extension
    5. Select - `dist` folder in this project (after the build)
 
+## Credits
+Extension was created using the template from <a href="https://github.com/fell-lucas/chrome-extension-template-preact-vite">Lucas Fell's template</a>
+
 ## License
 
 Distributed under the [MIT License](https://github.com/fell-lucas/chrome-extension-template-preact-vite/blob/main/LICENSE).
