@@ -7,14 +7,13 @@ const manifest: ManifestType = {
   version: packageJson.version,
   permissions: ['storage'],
   description: packageJson.description,
-  options_page: 'src/options/index.html',
-  background: { service_worker: 'src/background/index.js' },
   action: {
     default_popup: 'src/popup/index.html',
-    default_icon: 'icon-34.png',
+    default_icon: 'icon32.png',
   },
   icons: {
-    '128': 'icon-128.png',
+    '32': 'icon32.png',
+    '128': 'icon128.png',
   },
   content_scripts: [
     {
@@ -24,7 +23,7 @@ const manifest: ManifestType = {
   ],
   web_accessible_resources: [
     {
-      resources: ['icon-128.png', 'icon-34.png'],
+      resources: ['icon128.png', 'icon32.png'],
       matches: [],
     },
   ],

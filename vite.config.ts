@@ -22,9 +22,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         content: resolve(src, 'content', 'index.ts'),
-        background: resolve(src, 'background', 'index.ts'),
         popup: resolve(src, 'popup', 'index.html'),
-        options: resolve(src, 'options', 'index.html'),
       },
       output: {
         entryFileNames: chunk => `src/${chunk.name}/index.js`,

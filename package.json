@@ -1,11 +1,11 @@
 {
   "name": "git-quick",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Chrome extension to add useful buttons to GH commit UI",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fell-lucas/git-quick.git"
+    "url": "https://github.com/KristofferLinderman/git-quick"
   },
   "scripts": {
     "build": "vite build",
